@@ -1,6 +1,6 @@
 import { getBaseURL } from "./constants";
 import fetchData from "./fetchData";
-import { Market, MarketStatsList, PaginatedResponse, PerpQuoteResponseV2, PerpSide } from "./types";
+import { Market, MarketStatsList, OpenPositionRequest, PaginatedResponse, PerpOrder, PerpQuoteRequestV2, PerpQuoteResponseV2, PerpSide } from "./types";
 
 export const fetchMarketStatsList = async (
     chainId?: number,
@@ -34,3 +34,15 @@ export const fetchQuote = async (
     params.append("speedUp", speedUp.toString());
     return fetchData(`${getBaseURL(chainId)}/api/market/quote?${params}`);
   };
+
+
+// export const fetchOrderV2 = async (
+//   request: PerpQuoteRequestV2,
+//   chainId: number,
+// ): Promise<PerpOrder<OpenPositionRequest>> => {
+  // return await postData(`${getBaseURL(chainId)}/api/v2/order/open`, {
+  //   ...request,
+  //   side: request.side.toUpperCase(),
+  // });
+  // send post request
+// };

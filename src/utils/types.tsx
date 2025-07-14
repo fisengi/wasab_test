@@ -154,3 +154,22 @@ export interface MarketStats {
   oneDayVolumeUsd: number;
   oneDayChange: number;
 }
+
+
+export enum PayInType {
+  NATIVE = "NATIVE",
+  TOKEN = "TOKEN",
+  VAULT = "VAULT",
+}
+
+
+export interface PerpQuoteRequestV2 {
+  marketId: number;
+  side: "long" | "short";
+  downPayment: bigint;
+  leverage: number;
+  maxSlippage: number;
+  speedUp: boolean;
+  payInType: PayInType; // use NATIVE
+  address: string;
+}
