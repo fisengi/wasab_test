@@ -23,8 +23,7 @@ export const fetchQuote = async (
     leverage: number,
     maxSlippage: number,
     speedUp: boolean,
-    chainId: number,
-    existingPositionId: number | undefined,
+    chainId: number
   ): Promise<PerpQuoteResponseV2> => {
     const params = new URLSearchParams();
     params.append("marketId", marketPairId.toString());
@@ -33,9 +32,5 @@ export const fetchQuote = async (
     params.append("leverage", leverage.toString());
     params.append("maxSlippage", maxSlippage.toString());
     params.append("speedUp", speedUp.toString());
-    if (existingPositionId) {
-      params.append("existingPositionId", existingPositionId.toString());
-    }
-  
     return fetchData(`${getBaseURL(chainId)}/api/market/quote?${params}`);
   };
