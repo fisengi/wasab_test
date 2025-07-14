@@ -135,4 +135,22 @@ export interface PaginatedResponse<T> {
 
 export interface MarketStatsList {
   market: Market;
+  tokenStats: MarketStats;
+}
+
+
+export interface MarketStats {
+  address: string;
+  symbol: string;
+  price: number;
+  priceUsd: number;
+  marketCap: number;
+  oneHourVolumeUsd: number;
+  oneHourChange: number;
+  fourHourVolumeUsd: number;
+  fourHourChange: number;
+  twelveHourVolumeUsd: number;
+  twelveHourChange: number;
+  oneDayVolumeUsd: number;
+  oneDayChange: number;
 }
