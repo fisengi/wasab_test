@@ -12,7 +12,7 @@ export const fetchMarketStatsList = async (
       params.set("chainId", chainId.toString());
     }
   
-    return fetchData(`https://mtpmmrxvh7.us-east-1.awsapprunner.com/markets?${params}`);
+    return fetchData(`https://test-gateway.wasabi.xyz/markets?${params}`);
   };
   
 
