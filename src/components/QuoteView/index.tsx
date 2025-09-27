@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { MarketStatsList, PerpSide } from "../../utils/types";
-import { formatStat } from "../../utils/formatStat";
+
 import { useIsMobile } from "../../hooks/useMediaQuery";
 import { useQuote } from "../../hooks/useQuote";
-
+import { parseUnits } from "viem";
 import InputView from "../QuoteView/InputView";
 import OutputView from "../QuoteView/OutputView";
 import LongShortButton from "../QuoteView/LongShortButton";
@@ -18,7 +18,7 @@ type Props = {
 export default function QuoteViewIndex({ marketStats }: Props) {
     const isMobile = useIsMobile();
     const CARD_MIN_H = "min-h-[140px]";
-    const { market, tokenStats } = marketStats;
+    const { market } = marketStats;
     const quoteToken = market.pair.quoteToken;
     const baseToken = market.pair.baseToken;
 
@@ -28,7 +28,6 @@ export default function QuoteViewIndex({ marketStats }: Props) {
     const [maxSlippage, setMaxSlippage] = useState<number>(1);
     const [leverage, setLeverage] = useState<number>(market.maxLeverage);
 
-    // Reset local state when market changes
     useEffect(() => {
         setSide("long");
         setAmountInput("");
@@ -37,21 +36,29 @@ export default function QuoteViewIndex({ marketStats }: Props) {
         setLeverage(market.maxLeverage);
     }, [market.id]);
 
-    useEffect(() => {
-        if (amountInput) {
-            const downPayment = BigInt(amountInput) * BigInt(leverage);
-            const quote = useQuote(
-                market.id,
-                side,
-                downPayment,
-                leverage,
-                maxSlippage,
-                speedUp,
-                market.chainId
-            );
-            console.log("alo", quote);
-        }
-    }, [market.id]);
+    const { isFormValid, downPayment } = useMemo(() => {
+        const downPaymentNum = Number.parseFloat(amountInput);
+        const isFormValid = !Number.isNaN(downPaymentNum) && downPaymentNum > 0;
+        const downPayment = isFormValid
+            ? parseUnits(amountInput, market.pair.quoteToken.decimals)
+            : undefined;
+        return { isFormValid, downPayment };
+    }, [amountInput, market]);
+
+    const {
+        data: quote,
+        isLoading: isLoadingQuote,
+        error: quoteError,
+    } = useQuote(
+        market.id,
+        side,
+        downPayment,
+        leverage,
+        maxSlippage,
+        speedUp,
+        market.chainId,
+        isFormValid
+    );
 
     return (
         <section className="rounded-lg border border-[#62666a] p-4 shadow-sm">
@@ -86,15 +93,18 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                         CARD_MIN_H={CARD_MIN_H}
                         amountInput={amountInput}
                         setAmountInput={setAmountInput}
-                        tokenStats={market.pair.baseToken}
-                        tokenPrice={tokenStats.price}
-                        quoteToken={quoteToken}
-                        formatStat={formatStat}
+                        tokenStats={quoteToken}
+                        quote={quote!}
+                        isLoading={isLoadingQuote}
                     />
                     <OutputView
                         CARD_MIN_H={CARD_MIN_H}
                         side={side}
+                        baseToken={baseToken}
                         quoteToken={quoteToken}
+                        quote={quote!}
+                        isLoading={isLoadingQuote}
+                        error={quoteError?.message}
                     />
 
                     <div className="text-gray-300 text-[12px] ">

@@ -7,6 +7,7 @@ import {
     formatPercent,
     formatStat,
 } from "../../utils/formatStat";
+import { setMarketNameInUrl } from "../../utils/url";
 
 type Props = {
     markets: MarketStatsList[];
@@ -100,7 +101,10 @@ export default function MarketList({
                         <>
                             <td
                                 className={`px-3 py-3 text-sm align-middle cursor-pointer ${borderClass}  transition-colors`}
-                                onClick={() => onChange(id)}
+                                onClick={() => {
+                                    setMarketNameInUrl(item.market.name);
+                                    onChange(id);
+                                }}
                             >
                                 <div className="font-medium flex items-center">
                                     <div className="flex items-center mr-2">
@@ -132,7 +136,10 @@ export default function MarketList({
                             </td>
                             <td
                                 className={`hidden sm:table-cell px-3 py-3 text-sm align-middle text-gray-200 cursor-pointer ${borderClass} transition-colors`}
-                                onClick={() => onChange(id)}
+                                onClick={() => {
+                                    setMarketNameInUrl(item.market.name);
+                                    onChange(id);
+                                }}
                             >
                                 {formatCompactCurrency(
                                     item.tokenStats.marketCap
@@ -140,7 +147,10 @@ export default function MarketList({
                             </td>
                             <td
                                 className={`hidden sm:table-cell px-3 py-3 text-sm align-middle text-gray-200 cursor-pointer ${borderClass}  transition-colors`}
-                                onClick={() => onChange(id)}
+                                onClick={() => {
+                                    setMarketNameInUrl(item.market.name);
+                                    onChange(id);
+                                }}
                             >
                                 {formatCompactCurrency(
                                     item.tokenStats.oneDayVolumeUsd
@@ -148,13 +158,19 @@ export default function MarketList({
                             </td>
                             <td
                                 className={`hidden sm:table-cell px-3 py-3 text-sm align-middle font-medium cursor-pointer ${borderClass} ${changeColor} transition-colors`}
-                                onClick={() => onChange(id)}
+                                onClick={() => {
+                                    setMarketNameInUrl(item.market.name);
+                                    onChange(id);
+                                }}
                             >
                                 {formatPercent(oneDayChange)}
                             </td>
                             <td
                                 className={`px-3 py-3 text-sm align-middle text-gray-200 cursor-pointer  text-right ${borderClass} transition-colors`}
-                                onClick={() => onChange(id)}
+                                onClick={() => {
+                                    setMarketNameInUrl(item.market.name);
+                                    onChange(id);
+                                }}
                             >
                                 {formatStat(
                                     item.tokenStats.price,

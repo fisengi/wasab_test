@@ -8,7 +8,7 @@ type Props = {
 };
 
 function MaxSlippage({ slippage, setSlippage }: Props) {
-    const presets = [0.01, 0.05, 0.1, 0.5, 1, 2.5, 5];
+    const presets = ["0.01", "0.05", "0.1", "0.5", "1", "2.5", "5"];
 
     const slippageValue = slippage;
     const isInvalid =
@@ -28,10 +28,10 @@ function MaxSlippage({ slippage, setSlippage }: Props) {
                 {presets.map((preset) => (
                     <button
                         key={preset}
-                        onClick={() => setSlippage(preset as number)}
+                        onClick={() => setSlippage(parseFloat(preset))}
                         className={`min-w-12 py-1 text-[12px] font-medium rounded-full transition-colors duration-200 
                             ${
-                                slippage === (preset as number)
+                                slippage === parseFloat(preset)
                                     ? "bg-gray-700 text-white border border-transparent"
                                     : "bg-transparent border border-gray-600 text-gray-400 hover:bg-gray-800"
                             }`}
