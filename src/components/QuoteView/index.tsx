@@ -3,7 +3,8 @@ import { MarketStatsList, PerpSide } from "../../utils/types";
 
 import { useIsMobile } from "../../hooks/useMediaQuery";
 import { useQuote } from "../../hooks/useQuote";
-import { parseUnits } from "viem";
+import { parseUnits, formatUnits } from "viem";
+import { formatPercent } from "../../utils/formatStat";
 import InputView from "../QuoteView/InputView";
 import OutputView from "../QuoteView/OutputView";
 import LongShortButton from "../QuoteView/LongShortButton";
@@ -59,7 +60,7 @@ export default function QuoteViewIndex({ marketStats }: Props) {
         market.chainId,
         isFormValid
     );
-
+    console.log("quote", quote);
     return (
         <section className="rounded-lg border border-[#62666a] p-4 shadow-sm">
             <div className="mb-4 flex items-center justify-between ">
@@ -123,6 +124,60 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                         setSlippage={setMaxSlippage}
                     />
                     <SpeedUp speedUp={speedUp} setSpeedUp={setSpeedUp} />
+                </div>
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between text-gray-300">
+                        <span>Price Impact</span>
+                        <span className={isLoadingQuote ? "blur-sm" : ""}>
+                            {quote
+                                ? new Intl.NumberFormat(undefined, {
+                                      maximumSignificantDigits: 2,
+                                  }).format(quote.swapResponse.priceImpact) +
+                                  "%"
+                                : "-"}
+                        </span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-300">
+                        <span>Entry Price</span>
+                        <span className={isLoadingQuote ? "blur-sm" : ""}>
+                            {quote
+                                ? "$" +
+                                  new Intl.NumberFormat(undefined, {
+                                      maximumSignificantDigits: 4,
+                                  }).format(quote.entryPrice)
+                                : "-"}
+                        </span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-300">
+                        <span>Liquidation Price</span>
+                        <span className={isLoadingQuote ? "blur-sm" : ""}>
+                            {quote
+                                ? "$" +
+                                  new Intl.NumberFormat(undefined, {
+                                      maximumSignificantDigits: 3,
+                                  }).format(quote.liquidationPrice)
+                                : "-"}
+                        </span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-300">
+                        <span>Borrow Rate</span>
+                        <span className={isLoadingQuote ? "blur-sm" : ""}>
+                            {quote
+                                ? new Intl.NumberFormat(undefined, {
+                                      maximumSignificantDigits: 2,
+                                  }).format(quote.hourlyBorrowFee) + "% / 1h"
+                                : "-"}
+                        </span>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-300">
+                        <span>Open Fees</span>
+                        <span className={isLoadingQuote ? "blur-sm" : ""}>
+                            {quote
+                                ? "$" +
+                                  formatUnits(quote.fee, quoteToken.decimals)
+                                : "-"}
+                        </span>
+                    </div>
                 </div>
             </div>
         </section>
