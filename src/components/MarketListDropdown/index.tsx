@@ -98,7 +98,8 @@ export default function MarketListDropdown({
                     selectedMarket={selectedMarket?.market}
                 />
                 <SelectedMarketStats
-                    selectedMarket={selectedMarket}
+                    marketStats={selectedMarket?.tokenStats}
+                    symbol={selectedMarket?.market.pair.quoteToken.symbol}
                     isMobile={isMobile}
                 />
             </div>

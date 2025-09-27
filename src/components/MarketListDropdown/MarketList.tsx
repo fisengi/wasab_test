@@ -4,9 +4,9 @@ import { MarketStatsList } from "../../utils/types";
 import { useIsMobile } from "../../hooks/useMediaQuery";
 import {
     formatCompactCurrency,
-    formatUsd,
     formatPercent,
-} from "../../utils/formatNumber";
+    formatStat,
+} from "../../utils/formatStat";
 
 type Props = {
     markets: MarketStatsList[];
@@ -41,7 +41,7 @@ export default function MarketList({
     }
 
     return (
-        <div className="w-full h-full">
+        <div className="w-full h-full overflow-x-hidden">
             <TableVirtuoso
                 data={rows}
                 style={{ height: "100%" }}
@@ -76,7 +76,7 @@ export default function MarketList({
                         <th className="hidden sm:table-cell px-3 py-2 font-light w-2/12">
                             24h Change
                         </th>
-                        <th className="px-3 py-2 font-light w-5/12 sm:w-1/12 flex-1 text-right ">
+                        <th className="px-3 py-2 font-light w-5/12 sm:w-2/12 flex-1 text-right ">
                             Price {isMobile && "24h %"}
                         </th>
                     </tr>
@@ -99,7 +99,7 @@ export default function MarketList({
                     return (
                         <>
                             <td
-                                className={`px-3 py-3 text-sm align-middle cursor-pointer ${borderClass} hover:bg-[#111418] transition-colors`}
+                                className={`px-3 py-3 text-sm align-middle cursor-pointer ${borderClass}  transition-colors`}
                                 onClick={() => onChange(id)}
                             >
                                 <div className="font-medium flex items-center">
@@ -131,7 +131,7 @@ export default function MarketList({
                                 </div>
                             </td>
                             <td
-                                className={`hidden sm:table-cell px-3 py-3 text-sm align-middle text-gray-200 cursor-pointer ${borderClass} hover:bg-[#111418] transition-colors`}
+                                className={`hidden sm:table-cell px-3 py-3 text-sm align-middle text-gray-200 cursor-pointer ${borderClass} transition-colors`}
                                 onClick={() => onChange(id)}
                             >
                                 {formatCompactCurrency(
@@ -139,7 +139,7 @@ export default function MarketList({
                                 )}
                             </td>
                             <td
-                                className={`hidden sm:table-cell px-3 py-3 text-sm align-middle text-gray-200 cursor-pointer ${borderClass} hover:bg-[#111418] transition-colors`}
+                                className={`hidden sm:table-cell px-3 py-3 text-sm align-middle text-gray-200 cursor-pointer ${borderClass}  transition-colors`}
                                 onClick={() => onChange(id)}
                             >
                                 {formatCompactCurrency(
@@ -147,18 +147,18 @@ export default function MarketList({
                                 )}
                             </td>
                             <td
-                                className={`hidden sm:table-cell px-3 py-3 text-sm align-middle font-medium cursor-pointer ${borderClass} ${changeColor} hover:bg-[#111418] transition-colors`}
+                                className={`hidden sm:table-cell px-3 py-3 text-sm align-middle font-medium cursor-pointer ${borderClass} ${changeColor} transition-colors`}
                                 onClick={() => onChange(id)}
                             >
                                 {formatPercent(oneDayChange)}
                             </td>
                             <td
-                                className={`px-3 py-3 text-sm align-middle text-gray-200 cursor-pointer  text-right ${borderClass} hover:bg-[#111418] transition-colors`}
+                                className={`px-3 py-3 text-sm align-middle text-gray-200 cursor-pointer  text-right ${borderClass} transition-colors`}
                                 onClick={() => onChange(id)}
                             >
-                                {formatUsd(
-                                    item.tokenStats.priceUsd ??
-                                        item.tokenStats.price
+                                {formatStat(
+                                    item.tokenStats.price,
+                                    item.market.pair.quoteToken.symbol
                                 )}
                                 {isMobile && (
                                     <div className="text-gray-400 text-[10px]">
@@ -170,11 +170,6 @@ export default function MarketList({
                     );
                 }}
             />
-            {rows.length === 0 && (
-                <div className="p-6 text-center text-sm text-gray-400">
-                    No markets
-                </div>
-            )}
         </div>
     );
 }

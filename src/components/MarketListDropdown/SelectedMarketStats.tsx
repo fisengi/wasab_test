@@ -1,21 +1,23 @@
 import React from "react";
-import { MarketStatsList } from "../../utils/types";
+import { MarketStats } from "../../utils/types";
 import {
     formatCompactCurrency,
     formatPercent,
-    formatUsd,
-} from "../../utils/formatNumber";
+    formatStat,
+} from "../../utils/formatStat";
 
 type Props = {
-    selectedMarket: MarketStatsList | undefined;
+    marketStats: MarketStats | undefined;
+    symbol: string | undefined;
     isMobile: boolean;
 };
 
 export default function SelectedMarketStats({
-    selectedMarket,
+    marketStats,
+    symbol,
     isMobile,
 }: Props) {
-    if (!selectedMarket) {
+    if (!marketStats) {
         return null;
     }
 
@@ -25,30 +27,26 @@ export default function SelectedMarketStats({
                 <div className="flex-col justify-center items-center">
                     <div className="text-[12px] text-gray-500">Price</div>
                     <div className="text-sm text-right text-white">
-                        {formatUsd(selectedMarket.tokenStats.priceUsd ?? 0)}
+                        {formatStat(marketStats.price, symbol ?? "")}
                     </div>
                 </div>
                 <div className="flex-col justify-center items-center">
                     <div className="text-[12px] text-gray-500">Market Cap</div>
                     <div className="text-sm text-right text-white">
-                        {formatCompactCurrency(
-                            selectedMarket.tokenStats.marketCap ?? 0
-                        )}
+                        {formatCompactCurrency(marketStats.marketCap ?? 0)}
                     </div>
                 </div>
                 <div className="flex-col justify-center items-center">
                     <div className="text-[12px] text-gray-500">24h Change</div>
                     <div className="text-sm text-right text-white">
-                        {formatPercent(
-                            selectedMarket.tokenStats.oneDayChange ?? 0
-                        )}
+                        {formatPercent(marketStats.oneDayChange ?? 0)}
                     </div>
                 </div>
                 <div className="flex-col justify-center items-center">
                     <div className="text-[12px] text-gray-500">24h Volume</div>
                     <div className="text-sm text-right text-white">
                         {formatCompactCurrency(
-                            selectedMarket.tokenStats.oneDayVolumeUsd ?? 0
+                            marketStats.oneDayVolumeUsd ?? 0
                         )}
                     </div>
                 </div>
@@ -59,10 +57,10 @@ export default function SelectedMarketStats({
     return (
         <div className="flex-col justify-center items-center">
             <div className="text-sm text-right text-white">
-                {formatUsd(selectedMarket.tokenStats.priceUsd ?? 0)}
+                {formatStat(marketStats.price, symbol ?? "")}
             </div>
             <div className="text-sm text-right text-white">
-                {formatPercent(selectedMarket.tokenStats.oneDayChange ?? 0)}
+                {formatPercent(marketStats.oneDayChange ?? 0)}
             </div>
         </div>
     );
