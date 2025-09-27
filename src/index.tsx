@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import App from "./App";
+import "tippy.js/dist/tippy.css";
 
 // Create a client
 const queryClient = new QueryClient({
