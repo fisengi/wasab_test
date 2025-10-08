@@ -92,7 +92,7 @@ export default function MarketListDropdown({
 
     return (
         <div>
-            <div className="flex justify-between  mx-auto max-w-5xl px-2 py-6">
+            <div className="flex justify-between  mx-auto  px-2 py-6">
                 <OpenListButton
                     onClick={openModal}
                     selectedMarket={selectedMarket?.market}

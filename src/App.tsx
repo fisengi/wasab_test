@@ -8,6 +8,7 @@ import {
     getMarketNameFromUrl,
     subscribeToMarketInUrlChange,
 } from "./utils/url";
+import ConnectButton from "./components/Wallet/ConnectButton";
 
 const App: React.FC = () => {
     const { data, isLoading, isError } = useMarketStatsList();
@@ -52,7 +53,10 @@ const App: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-black text-white overflow-y-hidden">
-            <div className="mx-auto max-w-5xl px-4 py-6">
+            <div className="mx-auto p-2 border-b border-[#62666a]">
+                <ConnectButton />
+            </div>
+            <div className="mx-auto px-2 py-2">
                 <MarketListDropdown
                     markets={data?.items}
                     isLoading={isLoading}
@@ -60,8 +64,12 @@ const App: React.FC = () => {
                     selectedMarketId={selectedMarketId}
                     onChange={setSelectedMarketId}
                 />
-
-                {selectedMarket && <QuoteView marketStats={selectedMarket} />}
+                <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1">
+                    <div className="md:col-span-1 lg:col-span-2 sm:col-span-1 "></div>
+                    {selectedMarket && (
+                        <QuoteView marketStats={selectedMarket} />
+                    )}
+                </div>
             </div>
         </div>
     );

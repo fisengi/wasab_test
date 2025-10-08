@@ -11,6 +11,10 @@ import LongShortButton from "../QuoteView/LongShortButton";
 import LeverageSlider from "../QuoteView/LeverageSlider";
 import MaxSlippage from "../QuoteView/MaxSlippage";
 import SpeedUp from "../QuoteView/SpeedUp";
+import QuoteButton from "../Wallet/QuoteButton";
+import { WASABI_LONG_POOL, WASABI_SHORT_POOL } from "../../utils/constants";
+import type { Address } from "viem";
+import { useUsdcBalance } from "../../hooks/useUsdcBalance";
 
 type Props = {
     marketStats: MarketStatsList;
@@ -18,7 +22,7 @@ type Props = {
 
 export default function QuoteViewIndex({ marketStats }: Props) {
     const isMobile = useIsMobile();
-    const CARD_MIN_H = "min-h-[140px]";
+    const CARD_MIN_H = "min-h-[100px]";
     const { market } = marketStats;
     const quoteToken = market.pair.quoteToken;
     const baseToken = market.pair.baseToken;
@@ -28,6 +32,9 @@ export default function QuoteViewIndex({ marketStats }: Props) {
     const [speedUp, setSpeedUp] = useState<boolean>(false);
     const [maxSlippage, setMaxSlippage] = useState<number>(1);
     const [leverage, setLeverage] = useState<number>(market.maxLeverage);
+
+    const [isInsufficientBalance, setIsInsufficientBalance] =
+        useState<boolean>(false);
 
     useEffect(() => {
         setSide("long");
@@ -60,14 +67,14 @@ export default function QuoteViewIndex({ marketStats }: Props) {
         market.chainId,
         isFormValid
     );
-    console.log("quote", quote);
+
     return (
         <section className="rounded-lg border border-[#62666a] p-4 shadow-sm">
             <div className="mb-4 flex items-center justify-between ">
                 <LongShortButton side={side} setSide={setSide} />
                 {!isMobile && (
-                    <div className="font-medium flex items-center">
-                        <div className="flex items-center mr-2">
+                    <div className="font-medium flex items-center flex-col">
+                        <div className="flex items-center mr-2 w-full justify-end">
                             <img
                                 src={baseToken.imageUrl}
                                 alt=""
@@ -80,18 +87,21 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                                 className="h-6 w-6 rounded-full ring-2 ring-[#0c0e13] -ml-1.5"
                             />
                         </div>
-                        <div className="text-white">{baseToken.symbol}</div>
-                        <div className=" text-gray-400">
-                            -{quoteToken.symbol}
+                        <div className="flex flex-row">
+                            <div className="text-white">{baseToken.symbol}</div>
+                            <div className=" text-gray-400">
+                                -{quoteToken.symbol}
+                            </div>
                         </div>
                     </div>
                 )}
             </div>
 
-            <div className="grid gap-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 ">
-                <div className="space-y-4">
+            <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1 ">
+                <div className="space-y-2">
                     <InputView
                         CARD_MIN_H={CARD_MIN_H}
+                        setIsInsufficientBalance={setIsInsufficientBalance}
                         amountInput={amountInput}
                         setAmountInput={setAmountInput}
                         tokenStats={quoteToken}
@@ -125,8 +135,8 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                     />
                     <SpeedUp speedUp={speedUp} setSpeedUp={setSpeedUp} />
                 </div>
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between text-gray-300">
+                <div className="space-y-1">
+                    <div className="flex items-center justify-between text-gray-300 text-sm">
                         <span>Price Impact</span>
                         <span className={isLoadingQuote ? "blur-sm" : ""}>
                             {quote
@@ -137,7 +147,7 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                                 : "-"}
                         </span>
                     </div>
-                    <div className="flex items-center justify-between text-gray-300">
+                    <div className="flex items-center justify-between text-gray-300 text-sm">
                         <span>Entry Price</span>
                         <span className={isLoadingQuote ? "blur-sm" : ""}>
                             {quote
@@ -148,7 +158,7 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                                 : "-"}
                         </span>
                     </div>
-                    <div className="flex items-center justify-between text-gray-300">
+                    <div className="flex items-center justify-between text-gray-300 text-sm">
                         <span>Liquidation Price</span>
                         <span className={isLoadingQuote ? "blur-sm" : ""}>
                             {quote
@@ -159,7 +169,7 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                                 : "-"}
                         </span>
                     </div>
-                    <div className="flex items-center justify-between text-gray-300">
+                    <div className="flex items-center justify-between text-gray-300 text-sm">
                         <span>Borrow Rate</span>
                         <span className={isLoadingQuote ? "blur-sm" : ""}>
                             {quote
@@ -169,7 +179,7 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                                 : "-"}
                         </span>
                     </div>
-                    <div className="flex items-center justify-between text-gray-300">
+                    <div className="flex items-center justify-between text-gray-300 text-sm">
                         <span>Open Fees</span>
                         <span className={isLoadingQuote ? "blur-sm" : ""}>
                             {quote
@@ -178,6 +188,18 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                                 : "-"}
                         </span>
                     </div>
+                    <QuoteButton
+                        isReady={quote !== undefined}
+                        tokenAddress={market.pair.quoteToken.address as Address}
+                        tokenSymbol={market.pair.quoteToken.symbol}
+                        spenderAddress={
+                            (side === "long"
+                                ? WASABI_LONG_POOL
+                                : WASABI_SHORT_POOL) as Address
+                        }
+                        requiredAmount={downPayment}
+                        insufficientBalance={isInsufficientBalance}
+                    />
                 </div>
             </div>
         </section>

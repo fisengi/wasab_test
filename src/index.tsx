@@ -1,19 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import App from "./App";
 import "tippy.js/dist/tippy.css";
-
-// Create a client
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            staleTime: 5 * 60 * 1000, // 5 minutes
-            retry: 1,
-        },
-    },
-});
+import { AppKitProvider } from "./context/AppKitProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
@@ -21,8 +13,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
     <React.StrictMode>
-        <QueryClientProvider client={queryClient}>
+        <AppKitProvider>
             <App />
-        </QueryClientProvider>
+            <ToastContainer position="bottom-right" newestOnTop theme="dark" />
+        </AppKitProvider>
     </React.StrictMode>
 );
