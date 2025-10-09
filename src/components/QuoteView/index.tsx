@@ -199,6 +199,14 @@ export default function QuoteViewIndex({ marketStats }: Props) {
                         }
                         requiredAmount={downPayment}
                         insufficientBalance={isInsufficientBalance}
+                        marketId={market.id}
+                        side={side}
+                        leverage={leverage}
+                        maxSlippage={maxSlippage}
+                        speedUp={speedUp}
+                        onTradeSuccess={() => {
+                            setAmountInput("");
+                        }}
                     />
                 </div>
             </div>

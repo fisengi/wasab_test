@@ -28,7 +28,7 @@ export function formatStat(value: number, quoteToken: string): ReactNode {
     if (!isFinite(value)) return "-";
 
     const formattedNumber = new Intl.NumberFormat(undefined, {
-        maximumSignificantDigits: 2,
+        maximumSignificantDigits: 4,
     }).format(value);
 
     if (quoteToken.includes("SOL")) {

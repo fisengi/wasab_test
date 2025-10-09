@@ -134,12 +134,18 @@ placeholder-gray-300 caret-white"
                 Balance:{" "}
                 {tokenStats.symbol === "USDC" &&
                     formatted &&
-                    Number(formatted).toLocaleString("de-DE")}{" "}
+                    Number(formatted).toLocaleString("de-DE", {
+                        maximumFractionDigits: 5,
+                    })}{" "}
                 {tokenStats.symbol === "WETH" &&
-                    formatUnits(
-                        balanceData?.value as bigint,
-                        balanceData?.decimals ?? 0
-                    )}{" "}
+                    Number(
+                        formatUnits(
+                            balanceData?.value as bigint,
+                            balanceData?.decimals ?? 0
+                        )
+                    ).toLocaleString("de-DE", {
+                        maximumFractionDigits: 5,
+                    })}{" "}
                 <span className="text-[#94ff0b] text-xs">Max</span>
             </div>
         </label>

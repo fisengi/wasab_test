@@ -1,3 +1,7 @@
+function jsonBigIntReplacer(_key: string, value: unknown) {
+    return typeof value === "bigint" ? value.toString() : value;
+}
+
 export default async function postData(url = "", data = {}, headers: any = {}) {
     // Default options are marked with *
     headers["Content-Type"] = "application/json";
@@ -9,7 +13,7 @@ export default async function postData(url = "", data = {}, headers: any = {}) {
         headers: headers,
         redirect: "follow", // manual, *follow, error
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
+        body: JSON.stringify(data, jsonBigIntReplacer), // serialize bigint as string
     });
     const responseData = await response.json();
     if (response.ok) {

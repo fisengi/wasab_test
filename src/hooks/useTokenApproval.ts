@@ -8,7 +8,7 @@ import {
     useBalance,
 } from "wagmi";
 import { erc20Abi } from "../utils/erc20Abi";
-import { toast, Id } from "react-toastify";
+import toast from "react-hot-toast";
 import { formatUnits } from "viem";
 
 type UseTokenApprovalArgs = {
@@ -109,51 +109,26 @@ export function useTokenApproval({
                 const declineMsg = "Approval request declined";
                 setUserDeclined(true);
                 setUserDeclinedMessage(declineMsg);
-                if (toastIdRef.current) {
-                    toast.update(toastIdRef.current, {
-                        render: declineMsg,
-                        type: "error",
-                        isLoading: false,
-                        autoClose: 5000,
-                    });
-                    toastIdRef.current = null;
-                } else {
-                    toast.error(declineMsg);
-                }
+                if (toastIdRef.current) toast.dismiss(toastIdRef.current);
+                toast.error(declineMsg);
                 return;
             }
 
             // Other failure during write
-            if (toastIdRef.current) {
-                toast.update(toastIdRef.current, {
-                    render: "Approval failed",
-                    type: "error",
-                    isLoading: false,
-                    autoClose: 5000,
-                });
-                toastIdRef.current = null;
-            } else {
-                toast.error("Approval failed");
-            }
+            if (toastIdRef.current) toast.dismiss(toastIdRef.current);
+            toast.error("Approval failed");
         }
     };
 
     const isApproving = isWriting || isConfirming;
 
     // Toast notifications for approval lifecycle
-    const toastIdRef = useRef<Id | null>(null);
+    const toastIdRef = useRef<string | null>(null);
 
     useEffect(() => {
         if (isApproving) {
             if (!toastIdRef.current) {
-                toastIdRef.current = toast.loading("Allowing Token Transfers", {
-                    closeOnClick: false,
-                });
-            } else {
-                toast.update(toastIdRef.current, {
-                    render: "GETTING APPROVAL…",
-                    isLoading: true,
-                });
+                toastIdRef.current = toast.loading("Allowing Token Transfers");
             }
         } else if (
             !isApproving &&
@@ -171,33 +146,15 @@ export function useTokenApproval({
         if (isConfirmed) {
             // Refresh allowance after confirmation
             refetchAllowance();
-            if (toastIdRef.current) {
-                toast.update(toastIdRef.current, {
-                    render: "Approved",
-                    type: "success",
-                    isLoading: false,
-                    autoClose: 3000,
-                });
-                toastIdRef.current = null;
-            } else {
-                toast.success("Approved");
-            }
+            if (toastIdRef.current) toast.dismiss(toastIdRef.current);
+            toast.success("Approved");
         }
     }, [isConfirmed, refetchAllowance]);
 
     useEffect(() => {
         if (isTxError) {
-            if (toastIdRef.current) {
-                toast.update(toastIdRef.current, {
-                    render: "Approval failed",
-                    type: "error",
-                    isLoading: false,
-                    autoClose: 5000,
-                });
-                toastIdRef.current = null;
-            } else {
-                toast.error("Approval failed");
-            }
+            if (toastIdRef.current) toast.dismiss(toastIdRef.current);
+            toast.error("Approval failed");
         }
     }, [isTxError]);
 
